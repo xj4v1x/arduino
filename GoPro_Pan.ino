@@ -1,5 +1,6 @@
 #include <Servo.h>
- 
+ //500-2500
+ //myservo.writeMicroseconds(500-2500);
 Servo myservo;  // crea el objeto servo
  
 int pos = 0;    // posicion del servo
@@ -9,7 +10,7 @@ bool Derecha = false;
 int opt = 0;
 int minutos = 0;
 int segundos = 0;
-long tiempo = 40000;
+long tiempo = 120; //minutos
 int servo = 7;
 int buzz = 8;
 
@@ -20,7 +21,7 @@ void setup() {
   pinMode(servo, OUTPUT);
   pinMode(buzz, OUTPUT);
   myservo.attach(servo);  // vincula el servo al pin digital 7
-  myservo.write(90);              
+  myservo.writeMicroseconds(1500);             
   delay (500);
   myservo.detach();
   Sentido();
@@ -30,12 +31,10 @@ void setup() {
 }
  
 void loop() {
- 
 }
 
 void Sentido(){
   opt = 0;
- 
   while (opt==0) {
     if (digitalRead(BotonA)==HIGH){     
       delay(300);
@@ -43,7 +42,7 @@ void Sentido(){
       opt = 1;
       Derecha = true;
       myservo.attach(servo);
-      myservo.write(0);
+      myservo.writeMicroseconds(500);             
       delay(500);
       myservo.detach();
     }
@@ -53,12 +52,13 @@ void Sentido(){
       opt = 2;
       Derecha = false;
       myservo.attach(servo);
-      myservo.write(180);
+      myservo.writeMicroseconds(2500);
       delay(500);
       myservo.detach();
     }
   }
 }
+
 
 void Tiempo(){
   opt = 0;
@@ -67,11 +67,11 @@ void Tiempo(){
       delay(300);
       beep(277,200);
       tiempo = tiempo/2;
-      if (tiempo<500) {
-        tiempo=20000;
+      if (tiempo<1) {
+        tiempo=60;
         beep(440 ,400);
       }
-      Serial.println(((tiempo/1000)*180)/60);
+      Serial.println(tiempo);
     }
     if (digitalRead(BotonB)==HIGH){
       delay(300);
@@ -81,28 +81,31 @@ void Tiempo(){
   }
 }
 
+
 void Gira(){
+  tiempo = (tiempo*60000)/2000;
   myservo.attach(servo);
   Serial.print(Derecha);
   if (Derecha == true) {
-    myservo.write(0);
+    myservo.writeMicroseconds(500);             
     delay(500);
-    for (int i=0; i <= 180; i++) {
-      myservo.write(i);        
+    for (int i=500; i <= 2500; i++) {
+      myservo.writeMicroseconds(i);             
       delay (tiempo);       
       Serial.println(i);
     } 
   } else {
-    myservo.write(180);
+    myservo.writeMicroseconds(2500);             
     delay(500);
-    for (int i=180; i >= 0; i--) {
-      myservo.write(i);              
+    for (int i=2500; i >= 500; i--) {
+      myservo.writeMicroseconds(i);
       delay (tiempo);
       Serial.println(i);
     } 
   }
    myservo.detach();
 }
+
 
 void Fin() {
   beep(261,500);
